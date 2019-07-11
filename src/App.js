@@ -7,6 +7,7 @@ import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
+import Signin from './components/Signin/Signin';
 import './App.css';
 import 'tachyons';
 
@@ -131,7 +132,8 @@ class App extends Component {
     this.state = {
       input: '',
       imageUrl: '',
-      box: {}
+      box: {},
+      route: 'signin'
     }
   }
 
@@ -144,8 +146,15 @@ class App extends Component {
          leftCol: clarifaiface.left_col * width,
          topRow: clarifaiface.top_row * height,
          rightCol: width - (clarifaiface.right_col * width),
-         bottomRow: height - (clarifaiface.right_col * height)
+         bottomRow: height - (clarifaiface.bottom_row* height)
        }
+  }
+ 
+
+
+  displayFaceBox = (box) => {
+    console.log(box)
+    this.setState({box: box});
   }
 
   onInputChange = (event) => {
@@ -161,7 +170,7 @@ class App extends Component {
     app.models.predict( Clarifai.FACE_DETECT_MODEL, this.state.input)
     .then(response => {
 
-        this.calculateFaceLocation(response);
+        this.displayFaceBox(this.calculateFaceLocation(response));
       }
     )
     .catch(err => console.log(err))
@@ -186,10 +195,12 @@ class App extends Component {
           params={particlesoptions}
         />
         <Navigation />
+        { this.state
+        <Signin />
         <Logo />
         <Rank />
         <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onSubmit} />
-        <FaceRecognition imageUrl={this.state.imageUrl}/>
+        <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl}/>}
       </div>
     );
   }
